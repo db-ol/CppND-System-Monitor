@@ -28,7 +28,7 @@ std::string OperatingSystem();
 std::string Kernel();
 
 // CPU
-enum CPUStates {
+enum class CPUStates {
   kUser_ = 0,
   kNice_,
   kSystem_,
@@ -38,7 +38,8 @@ enum CPUStates {
   kSoftIRQ_,
   kSteal_,
   kGuest_,
-  kGuestNice_
+  kGuestNice_,
+  Count
 };
 std::vector<std::string> CpuUtilization();
 long Jiffies();
