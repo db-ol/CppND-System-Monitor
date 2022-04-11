@@ -10,7 +10,6 @@
 class System {
  public:
   System();
-  void Refresh();
   Processor& Cpu();                   // TODO: See src/system.cpp
   std::vector<Process>& Processes();  // TODO: See src/system.cpp
   float MemoryUtilization();          // TODO: See src/system.cpp
@@ -24,10 +23,6 @@ class System {
  private:
   Processor cpu_ = {};
   std::vector<Process> processes_ = {};
-  float memory_utilization_;
-  long uptime_;
-  int total_processes_;
-  int running_processes_;
   std::string kernel_;
   std::string operating_system_;
 };

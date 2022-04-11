@@ -10,7 +10,7 @@ class Processor {
   // DONE: Declare any necessary private members
  private:
   float utilization_;
-  long prev_idle_time_, prev_total_time_;
+  long prev_idle_time_{0}, prev_total_time_{0};
 };
 
 #endif

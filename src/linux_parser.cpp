@@ -90,8 +90,19 @@ float LinuxParser::MemoryUtilization() {
   return memory_utilization;
 }
 
-// TODO: Read and return the system uptime
-long LinuxParser::UpTime() { return 0; }
+// DONE: Read and return the system uptime
+long LinuxParser::UpTime() {
+  string line;
+  long value = 0;
+  std::ifstream filestream(kProcDirectory + kUptimeFilename);
+  if (filestream.is_open() && std::getline(filestream, line)) {
+    std::istringstream linestream(line);
+    if (linestream >> value) {
+      return value;
+    }
+  }
+  return value;
+}
 
 // TODO: Read and return the number of jiffies for the system
 long LinuxParser::Jiffies() { return 0; }
@@ -217,9 +228,9 @@ string LinuxParser::User(int pid) {
   std::ifstream filestream(kPasswordPath);
   if (filestream.is_open()) {
     while (std::getline(filestream, line)) {
-      std::istringstream linestream(line);
       std::replace(line.begin(), line.end(), ':', ' ');
-      if ((linestream >> name >> letter_x >> uid) && (std::stoi(uid) == pid)) {
+      std::istringstream linestream(line);
+      if ((linestream >> name >> letter_x >> uid) && (uid == Uid(pid))) {
         return name;
       }
     }
@@ -229,7 +240,7 @@ string LinuxParser::User(int pid) {
 
 // DONE: Read and return the uptime of a process
 long LinuxParser::UpTime(int pid) {
-  constexpr int starttime_idx = 22;
+  constexpr int starttime_idx = 21;
   int idx = 0;
   string line;
   string value;
@@ -243,4 +254,26 @@ long LinuxParser::UpTime(int pid) {
     }
   }
   return 0;
+}
+
+// DONE: Read and return CPU utilization of a process
+std::vector<std::string> LinuxParser::Cpu(int pid) {
+  std::vector<std::string> results;
+  constexpr int utime_idx = 13, stime_idx = 14, cutime_idx = 15,
+                cstime_idx = 16, starttime_idx = 21;
+  int idx = 0;
+  string line;
+  string value;
+  std::ifstream filestream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  if (filestream.is_open() && std::getline(filestream, line)) {
+    std::istringstream linestream(line);
+    while ((linestream >> value) && (idx <= starttime_idx)) {
+      if ((idx == utime_idx) || (idx == stime_idx) || (idx == cutime_idx) ||
+          (idx == cstime_idx) || (idx == starttime_idx)) {
+        results.push_back(value);
+      }
+      idx ++;
+    }
+  }
+  return results;
 }
