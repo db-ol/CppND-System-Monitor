@@ -8,10 +8,7 @@
 #include "processor.h"
 #include "system.h"
 
-using std::set;
-using std::size_t;
-using std::string;
-using std::vector;
+using namespace std;
 /*You need to complete the mentioned TODOs in order to satisfy the rubric criteria "The student will be able to extract and display basic data about the system."
 
 You need to properly format the uptime. Refer to the comments mentioned in format. cpp for formatting the uptime.*/
@@ -29,9 +26,9 @@ vector<Process>& System::Processes() {
   processes_.clear();
   vector<int> pids = LinuxParser::Pids();
   for (auto pid : pids) {
-    processes_.push_back(Process(pid));
+    processes_.emplace_back(Process(pid));
   }
-  std::sort(processes_.begin(), processes_.end());
+  std::sort(processes_.begin(), processes_.end(), greater<Process>());
   return processes_;
 }
 

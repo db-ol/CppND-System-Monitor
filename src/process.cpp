@@ -28,11 +28,11 @@ float Process::CpuUtilization() const {
   if (cpu_times.size() != 5) {
     return cpu_utilization;
   }
-  utime = std::stoi(cpu_times[0]);
-  stime = std::stoi(cpu_times[1]);
-  cutime = std::stoi(cpu_times[2]);
-  cstime = std::stoi(cpu_times[3]);
-  starttime = std::stoi(cpu_times[4]);
+  utime = std::stol(cpu_times[0]);
+  stime = std::stol(cpu_times[1]);
+  cutime = std::stol(cpu_times[2]);
+  cstime = std::stol(cpu_times[3]);
+  starttime = std::stol(cpu_times[4]);
 
   long total_time = utime + stime + cutime + cstime;
   float seconds = uptime - (starttime * 1.0 / sysconf(_SC_CLK_TCK));
@@ -54,9 +54,11 @@ string Process::Ram() {
 string Process::User() { return user_; }
 
 // DONE: Return the age of this process (in seconds)
-long int Process::UpTime() { return LinuxParser::UpTime(pid_) / sysconf(_SC_CLK_TCK); }
+long int Process::UpTime() {
+  return LinuxParser::UpTime() - LinuxParser::UpTime(pid_) / sysconf(_SC_CLK_TCK);
+}
 
-// DONE: Overload the "less than" comparison operator for Process objects
-bool Process::operator<(Process const& candidate) const {
+// DONE: Overload the "more than" comparison operator for Process objects
+bool Process::operator>(Process const& candidate) const {
   return CpuUtilization() > candidate.CpuUtilization();
 }
